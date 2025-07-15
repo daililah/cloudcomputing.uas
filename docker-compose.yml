@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: rental_app
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    container_name: rental_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rental_eria
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"  # aman jika port 3306 lokal sedang dipakai
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: rental_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8081:80"  # aman jika port 8080 lokal sedang dipakai
+    depends_on:
+      - db
+
+volumes:
+  db_data:
